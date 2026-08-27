@@ -151,6 +151,43 @@
   <!-- External Export Libraries (html2canvas & html2pdf) CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- 4. 이름/닉네임 입력 및 리포트 내보내기 모달 (Export Modal) -->
+  <div id="modal-export" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-file-arrow-down"></i> 진로 관심 탐색 리포트 내보내기</h3>
+        <button id="btn-modal-close" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-input-section">
+          <label for="student-name">학생 이름 또는 닉네임 <span class="required-star">*</span></label>
+          <input type="text" id="student-name" placeholder="이름을 입력해 주세요 (예: 홍길동)" maxlength="15">
+          <div id="modal-validation-msg" class="validation-msg"></div>
+        </div>
+
+        <div class="format-select-section">
+          <label>다운로드 포맷 선택</label>
+          <div class="format-options">
+            <button class="format-btn active" id="btn-fmt-png" data-format="png">
+              <i class="fa-solid fa-file-image"></i>
+              <span>PNG 이미지 파일</span>
+            </button>
+            <button class="format-btn" id="btn-fmt-pdf" data-format="pdf">
+              <i class="fa-solid fa-file-pdf"></i>
+              <span>PDF 문서 파일</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-modal-cancel" class="btn btn-secondary">취소</button>
+        <button id="btn-download-execute" class="btn btn-primary">
+          <i class="fa-solid fa-download"></i> 리포트 다운로드
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Data & Logic JS -->
   <script src="data.js"></script>
   <script src="app.js"></script>

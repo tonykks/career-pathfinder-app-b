@@ -255,11 +255,61 @@ document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // PDF Report Generation (P1 Prio)
+  // Modal Elements for App B Export
+  const modalExport = document.getElementById('modal-export');
+  const btnModalClose = document.getElementById('btn-modal-close');
+  const btnModalCancel = document.getElementById('btn-modal-cancel');
+  const studentNameInput = document.getElementById('student-name');
+  const modalValidationMsg = document.getElementById('modal-validation-msg');
+  const btnFmtPng = document.getElementById('btn-fmt-png');
+  const btnFmtPdf = document.getElementById('btn-fmt-pdf');
+  const btnDownloadExecute = document.getElementById('btn-download-execute');
+
+  let exportFormat = 'png'; // default
+
+  // Format selection toggle
+  btnFmtPng.addEventListener('click', () => {
+    exportFormat = 'png';
+    btnFmtPng.classList.add('active');
+    btnFmtPdf.classList.remove('active');
+  });
+
+  btnFmtPdf.addEventListener('click', () => {
+    exportFormat = 'pdf';
+    btnFmtPdf.classList.add('active');
+    btnFmtPng.classList.remove('active');
+  });
+
+  // Open modal
   btnExportReport.addEventListener('click', () => {
-    const rawName = prompt('리포트에 표시할 학생 이름을 입력해 주세요:');
-    if (rawName === null) return;
-    const name = rawName.trim() || '익명 학생';
+    modalExport.classList.add('active');
+    studentNameInput.value = '';
+    modalValidationMsg.style.display = 'none';
+    studentNameInput.focus();
+  });
+
+  // Close modal
+  function closeModal() {
+    modalExport.classList.remove('active');
+  }
+  btnModalClose.addEventListener('click', closeModal);
+  btnModalCancel.addEventListener('click', closeModal);
+
+  // Execute Download (Both PNG/PDF supported correctly)
+  btnDownloadExecute.addEventListener('click', async () => {
+    const rawName = studentNameInput.value.trim();
+    if (!rawName) {
+      modalValidationMsg.innerText = '다운로드를 위해 학생 이름 또는 닉네임을 입력해 주세요.';
+      modalValidationMsg.style.display = 'block';
+      studentNameInput.focus();
+      return;
+    }
+    modalValidationMsg.style.display = 'none';
+
+    btnDownloadExecute.disabled = true;
+    btnDownloadExecute.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 생성 중...';
+
+    const name = rawName || '익명 학생';
 
     // Clone element for printing
     const printArea = document.createElement('div');
@@ -299,16 +349,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.body.appendChild(printArea);
 
-    const opt = {
-      margin: 10,
-      filename: `${name}_진로관심리포트_AppB.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0F111A' },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().from(printArea).set(opt).save().then(() => {
+    try {
+      if (exportFormat === 'png') {
+        const canvas = await html2canvas(printArea, { scale: 2, useCORS: true, backgroundColor: '#0F111A' });
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = `${name}_진로관심리포트_AppB.png`;
+        link.href = dataUrl;
+        link.click();
+      } else {
+        const opt = {
+          margin: 10,
+          filename: `${name}_진로관심리포트_AppB.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0F111A' },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        await html2pdf().from(printArea).set(opt).save();
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
       document.body.removeChild(printArea);
-    });
+      btnDownloadExecute.disabled = false;
+      btnDownloadExecute.innerHTML = '<i class="fa-solid fa-download"></i> 리포트 다운로드';
+      closeModal();
+    }
   });
 });
