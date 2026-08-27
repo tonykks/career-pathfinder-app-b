@@ -1,0 +1,12 @@
+# App B Git Ignore - Keep repo clean of specifications, research logs, and agent collab files
+agent-collab-kit/
+requirements_B_Toby_Comparison_Prototype.md
+research.md
+test_profiles.js
+test_simulation.js
+verification_any_qa_b.md
+implementation_plan.md
+*.txt
+.env
+.gitignore_temp
+scratch/

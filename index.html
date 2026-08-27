@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>진로 관심 탐색기 | Career Interest Explorer</title>
+  <meta name="description" content="고등학생 행동·상황 중심 홀랜드 흥미 유형 기반 진로 관심 탐색 웹 앱">
+  <!-- Google Fonts: Inter & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- CSS Style -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header / Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo">
+        <i class="fa-solid fa-compass-drafting"></i>
+        <span>Career Pathfinder</span>
+        <span class="app-badge">App B - Intent</span>
+      </div>
+      <div class="header-subtitle">나의 관심 활동으로 찾는 진로 탐색</div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- 1. 시작 안내 화면 (Intro Screen) -->
+    <section id="section-intro" class="app-section active">
+      <div class="hero-card">
+        <div class="hero-badge"><i class="fa-solid fa-compass-dot"></i> 행동·상황 중심 진로 탐색</div>
+        <h1 class="hero-title">내가 좋아하는 활동으로<br>나만의 <span class="highlight">관심 성향</span>을 찾아보세요</h1>
+        <p class="hero-desc">
+          일상생활과 학교 활동에서 선호하는 행동에 관한 18개의 질문에 답해 보세요.<br>
+          존 홀랜드(John Holland)의 6대 흥미 이론을 바탕으로 Top 2 진로 성향과 해볼 만한 탐색 활동을 추천합니다.
+        </p>
+        <div class="hero-features">
+          <div class="feature-item">
+            <i class="fa-solid fa-circle-question"></i>
+            <span>쉽고 빠른 18개 문항</span>
+          </div>
+          <div class="feature-item">
+            <i class="fa-solid fa-brain"></i>
+            <span>6대 관심영역 정규 분석</span>
+          </div>
+          <div class="feature-item">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>설명 가능한 정규화 채점</span>
+          </div>
+        </div>
+        <button id="btn-start" class="btn btn-primary btn-large">
+          <span>진로 관심 탐색 시작</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. 슬라이드식 질문 응답 화면 (Slide Screen) -->
+    <section id="section-rating" class="app-section">
+      <div class="question-card">
+        <div class="progress-header">
+          <span>진행 상황</span>
+          <span class="progress-count" id="progress-text">1 / 18</span>
+        </div>
+        <div class="progress-bar-container">
+          <div id="progress-fill" class="progress-bar-fill"></div>
+        </div>
+
+        <div class="question-text-container">
+          <p id="question-text" class="question-text">질문 로딩 중...</p>
+        </div>
+
+        <!-- 5점 척도 선택 영역 -->
+        <div class="choices-container">
+          <div class="choice-option" data-score="1">
+            <div class="choice-circle">1</div>
+            <div class="choice-label">전혀 아니다</div>
+          </div>
+          <div class="choice-option" data-score="2">
+            <div class="choice-circle">2</div>
+            <div class="choice-label">아닌 편이다</div>
+          </div>
+          <div class="choice-option" data-score="3">
+            <div class="choice-circle">3</div>
+            <div class="choice-label">보통이다</div>
+          </div>
+          <div class="choice-option" data-score="4">
+            <div class="choice-circle">4</div>
+            <div class="choice-label">그런 편이다</div>
+          </div>
+          <div class="choice-option" data-score="5">
+            <div class="choice-circle">5</div>
+            <div class="choice-label">매우 그렇다</div>
+          </div>
+        </div>
+
+        <div class="question-navigation">
+          <button id="btn-prev" class="btn btn-secondary" disabled>
+            <i class="fa-solid fa-arrow-left"></i> 이전 질문
+          </button>
+          <button id="btn-next" class="btn btn-primary" disabled>
+            다음 질문 <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 결과 대시보드 화면 (Result Screen) -->
+    <section id="section-result" class="app-section">
+      <div class="result-header-card">
+        <h2 class="result-title"><i class="fa-solid fa-square-poll-horizontal"></i> 나의 진로 관심 분석 결과</h2>
+        <p class="result-subtitle">응답한 행동 선호도를 정규화 평균 평점으로 분석한 결과입니다. 가장 높은 선호를 나타내는 상위 2가지 진로 성향과 구체적인 제안을 확인하세요.</p>
+      </div>
+
+      <!-- Top 2 영역 카드 컨테이너 -->
+      <div class="top-domains-grid" id="top-domains-container">
+        <!-- JS로 동적 카드 생성 -->
+      </div>
+
+      <!-- 6대 영역 점수 분포 차트 -->
+      <div class="all-scores-card">
+        <h3><i class="fa-solid fa-chart-bar"></i> 6대 관심영역 분석 평점 분포 (5점 만점)</h3>
+        <div class="scores-list" id="scores-chart-container">
+          <!-- JS로 막대 그래프 그리기 -->
+        </div>
+      </div>
+
+      <!-- 리포트 내보내기 & 다시 시작 -->
+      <div class="result-footer-card">
+        <div class="footer-actions">
+          <button id="btn-restart" class="btn btn-secondary">
+            <i class="fa-solid fa-rotate-left"></i> 다시 검사하기
+          </button>
+          <button id="btn-export-report" class="btn btn-primary">
+            <i class="fa-solid fa-file-pdf"></i> 리포트 다운로드 (PDF/PNG)
+          </button>
+        </div>
+        <div id="disclaimer-container" class="disclaimer-text">
+          <!-- JS로 Disclaimer 삽입 -->
+        </div>
+        <div class="sources-list" id="sources-container">
+          <!-- JS로 출처 삽입 -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- External Export Libraries (html2canvas & html2pdf) CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- Data & Logic JS -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
