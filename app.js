@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressText = document.getElementById('progress-text');
   const progressFill = document.getElementById('progress-fill');
   const questionText = document.getElementById('question-text');
-  const choicesContainer = document.getElementById('choices-container');
+  const choicesContainer = document.getElementById('choices-container') || document.querySelector('.choices-container');
 
   const topDomainsContainer = document.getElementById('top-domains-container');
   const scoresChartContainer = document.getElementById('scores-chart-container');
