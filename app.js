@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <div style="margin-bottom: 30px; page-break-before: always;">
+      <div style="margin-bottom: 30px;">
         <h2 style="font-size: 18px; color: #FFFFFF; border-left: 4px solid #8B5CF6; padding-left: 10px; margin-bottom: 15px;">전체 6대 관심영역 분석 평점</h2>
         <div style="background: #1A1D2C; padding: 20px; border-radius: 12px; border: 1px solid #2D324D;">
           ${scoresChartContainer.innerHTML}
@@ -362,19 +362,68 @@ document.addEventListener('DOMContentLoaded', () => {
         link.href = dataUrl;
         link.click();
       } else {
-        const opt = {
-          margin: 10,
-          filename: `${name}_진로관심리포트_AppB.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0F111A' },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        await html2pdf().from(printArea).set(opt).save();
+        // PDF download logic
+        printArea.style.width = '900px';
+        printArea.style.boxSizing = 'border-box';
+
+        const canvas = await html2canvas(printArea, { scale: 2, useCORS: true, backgroundColor: '#0F111A' });
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // A4 page width = 210mm, A4 page height = 297mm
+        // 10mm margins on both left and right -> width = 190mm
+        // 10mm margins on both top and bottom -> height = 277mm
+        const pdfWidth = 190;
+        const pdfHeight = 277;
+        
+        const scale = pdfWidth / canvas.width;
+        const scaledHeight = canvas.height * scale;
+
+        if (scaledHeight <= pdfHeight) {
+          const imgData = canvas.toDataURL('image/jpeg', 0.98);
+          pdf.addImage(imgData, 'JPEG', 10, 10, pdfWidth, scaledHeight);
+        } else {
+          const pageHeightPx = pdfHeight / scale;
+          let currentY = 0;
+          let isFirstPage = true;
+
+          while (currentY < canvas.height) {
+            const sliceHeightPx = Math.min(pageHeightPx, canvas.height - currentY);
+            
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = sliceHeightPx;
+            
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(
+              canvas,
+              0, currentY, canvas.width, sliceHeightPx,
+              0, 0, canvas.width, sliceHeightPx
+            );
+            
+            const imgData = tempCanvas.toDataURL('image/jpeg', 0.98);
+            const destHeight = sliceHeightPx * scale;
+            
+            if (!isFirstPage) {
+              pdf.addPage();
+            }
+            pdf.addImage(imgData, 'JPEG', 10, 10, pdfWidth, destHeight);
+            
+            isFirstPage = false;
+            currentY += sliceHeightPx;
+          }
+        }
+        
+        pdf.save(`${name}_진로관심리포트_AppB.pdf`);
       }
     } catch (e) {
       console.error(e);
     } finally {
-      document.body.removeChild(printArea);
+      // Clean up DOM - DOM removal is only done here to prevent double remove
+      if (document.body.contains(printArea)) {
+        document.body.removeChild(printArea);
+      }
       btnDownloadExecute.disabled = false;
       btnDownloadExecute.innerHTML = '<i class="fa-solid fa-download"></i> 리포트 다운로드';
       closeModal();
