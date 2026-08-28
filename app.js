@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const sectionIntro = document.getElementById('section-intro');
   const sectionRating = document.getElementById('section-rating');
   const sectionResult = document.getElementById('section-result');
+  const hackathonNav = document.getElementById('hackathon-nav');
 
   const btnStart = document.getElementById('btn-start');
   const btnPrev = document.getElementById('btn-prev');
@@ -224,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.answers = {};
     sectionIntro.classList.remove('active');
     sectionRating.classList.add('active');
+    if (hackathonNav) hackathonNav.style.display = 'none';
     renderQuestion();
   });
 
@@ -242,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderResults(sortedResults);
       sectionRating.classList.remove('active');
       sectionResult.classList.add('active');
+      if (hackathonNav) hackathonNav.style.display = 'none';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       state.currentQuestionIdx += 1;
@@ -252,6 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
   btnRestart.addEventListener('click', () => {
     sectionResult.classList.remove('active');
     sectionIntro.classList.add('active');
+    if (hackathonNav) hackathonNav.style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
