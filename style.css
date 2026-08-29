@@ -132,8 +132,12 @@ body {
 }
 
 .hackathon-nav .nav-links {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
   gap: 8px;
+  width: 100%;
+  min-width: 0;
+  flex: 1;
   align-items: center;
 }
 
@@ -153,6 +157,8 @@ body {
   transition: var(--transition);
   white-space: nowrap;
   min-height: 38px;
+  width: 100%;
+  text-align: center;
 }
 
 .hackathon-nav .nav-btn:hover {
@@ -175,10 +181,19 @@ body {
   }
   
   .hackathon-nav .nav-links {
-    width: 100%;
+    display: flex;
+    gap: 8px;
+    width: auto;
+    max-width: 100%;
+    flex: 0 1 auto;
     overflow-x: auto;
     padding-bottom: 6px;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .hackathon-nav .nav-btn {
+    flex: 1 0 110px;
+    width: auto;
   }
   
   .hackathon-nav .nav-links::-webkit-scrollbar {
